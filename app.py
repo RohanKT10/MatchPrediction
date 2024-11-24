@@ -87,6 +87,18 @@ def predict():
     # Get the last 5 head-to-head matches
     last_matches = get_head_to_head_matches(team1, team2)
 
+    if last_matches.empty:
+        # If no matches found, render an error message
+        return render_template(
+            'predict.html',
+            winner="Insufficient data to predict winner",
+            last_matches=[],
+            top_batsman=None,
+            top_bowler=None,
+            team1=team1,
+            team2=team2
+        )
+
     # Predict the winner using the trained model
     winner = predict_winner(team1, team2, toss_winner)
 
@@ -94,19 +106,31 @@ def predict():
     head_to_head_deliveries = deliveries_df[
         ((deliveries_df['batting_team'] == team1) | (deliveries_df['batting_team'] == team2)) &
         ((deliveries_df['bowling_team'] == team1) | (deliveries_df['bowling_team'] == team2))
-        ]
+    ]
 
-    # Highest scoring batsman
-    batsman_runs = head_to_head_deliveries.groupby('batter')['batsman_runs'].sum().reset_index()
-    top_batsman = batsman_runs.loc[batsman_runs['batsman_runs'].idxmax()]
+    # Check if there is any data for head-to-head deliveries
+    if head_to_head_deliveries.empty:
+        top_batsman = None
+        top_bowler = None
+    else:
+        # Highest scoring batsman
+        batsman_runs = head_to_head_deliveries.groupby('batter')['batsman_runs'].sum().reset_index()
+        top_batsman = batsman_runs.loc[batsman_runs['batsman_runs'].idxmax()]
 
-    # Bowler with the most wickets
-    bowler_wickets = head_to_head_deliveries.groupby('bowler')['is_wicket'].sum().reset_index()
-    top_bowler = bowler_wickets.loc[bowler_wickets['is_wicket'].idxmax()]
+        # Bowler with the most wickets
+        bowler_wickets = head_to_head_deliveries.groupby('bowler')['is_wicket'].sum().reset_index()
+        top_bowler = bowler_wickets.loc[bowler_wickets['is_wicket'].idxmax()]
 
     # Render the prediction page with results
-    return render_template('predict.html', winner=winner, last_matches=last_matches.to_dict('records'),
-                           top_batsman=top_batsman, top_bowler=top_bowler, team1=team1, team2=team2)
+    return render_template(
+        'predict.html',
+        winner=winner,
+        last_matches=last_matches.to_dict('records'),
+        top_batsman=top_batsman,
+        top_bowler=top_bowler,
+        team1=team1,
+        team2=team2
+    )
 
 
 # Start the Flask app

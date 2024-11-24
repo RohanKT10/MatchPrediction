@@ -9,81 +9,86 @@
 </head>
 <body>
 
-<div class="container mt-5">
+    <div class="container mt-5">
 
-    <!-- Prediction Result -->
-    <div class="card">
-        <div class="card-header">
-            IPL Match Winner Prediction
-        </div>
-        <div class="card-body">
-            <h4 class="text-center text-success">Predicted Winner: <strong>{{ winner }}</strong></h4>
+        <!-- Prediction Result -->
+        <div class="card">
+            <div class="card-header">
+                IPL Match Winner Prediction
+            </div>
+            <div class="card-body">
+                <h4 class="text-center text-success">Predicted Winner: <strong>{{ winner }}</strong></h4>
 
-            <!-- Last 5 Matches -->
-            <div class="row mt-4">
-                <div class="col-md-12">
-                    <h5 class="text-center">Last 5 Matches Between {{ team1 }} and {{ team2 }}</h5>
-                    {% if last_matches %}
-                        <table class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Match Date</th>
-                                    <th>Winner</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for match in last_matches %}
+                <!-- Last 5 Matches -->
+                {% if last_matches and last_matches|length > 0 %}
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <h5 class="text-center">Last 5 Matches Between {{ team1 }} and {{ team2 }}</h5>
+                            <table class="table table-bordered table-striped">
+                                <thead>
                                     <tr>
-                                        <td>{{ match['date'].strftime('%Y-%m-%d') }}</td>
-                                        <td>{{ match['winner'] }}</td>
+                                        <th>Match Date</th>
+                                        <th>Winner</th>
                                     </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    {% else %}
-                        <p class="text-center">Not enough data for the selected teams.</p>
-                    {% endif %}
-                </div>
-            </div>
-
-            <!-- Top Batsman and Bowler -->
-            <div class="row mt-4">
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header bg-info text-white">
-                            Top Batsman
-                        </div>
-                        <div class="card-body">
-                            <p><strong>{{ top_batsman['batter'] }}</strong> - {{ top_batsman['batsman_runs'] }} runs</p>
+                                </thead>
+                                <tbody>
+                                    {% for match in last_matches %}
+                                        <tr>
+                                            <td>{{ match['date'].strftime('%Y-%m-%d') }}</td>
+                                            <td>{{ match['winner'] }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                </div>
+                {% else %}
+                    <div class="text-center mt-4">
+                        <p>No record available for the last matches between {{ team1 }} and {{ team2 }}.</p>
+                    </div>
+                {% endif %}
 
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header bg-danger text-white">
-                            Top Bowler
+                <!-- Top Batsman and Bowler -->
+                {% if top_batsman is not none and top_bowler is not none %}
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header bg-info text-white">
+                                    Top Batsman
+                                </div>
+                                <div class="card-body">
+                                    <p><strong>{{ top_batsman['batter'] }}</strong> - {{ top_batsman['batsman_runs'] }} runs</p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <p><strong>{{ top_bowler['bowler'] }}</strong> - {{ top_bowler['is_wicket'] }} wickets</p>
+
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header bg-danger text-white">
+                                    Top Bowler
+                                </div>
+                                <div class="card-body">
+                                    <p><strong>{{ top_bowler['bowler'] }}</strong> - {{ top_bowler['is_wicket'] }} wickets</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% else %}
+                    <div class="text-center mt-4">
+                        <p>No record available for top batsman and bowler in head-to-head matches.</p>
+                    </div>
+                {% endif %}
 
-            <div class="text-center mt-4">
-                <a href="/" class="back-btn">Go Back</a>
+                <div class="text-center mt-4">
+                    <a href="/" class="back-btn">Go Back</a>
+                </div>
             </div>
         </div>
     </div>
 
-</div>
-
-
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
-
 
